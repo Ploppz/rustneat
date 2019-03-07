@@ -1,20 +1,23 @@
 use rulinalg::matrix::{BaseMatrix, BaseMatrixMut, Matrix};
 
+/// The numeric type that will be used in the neural network
+pub type Num = f32;
+
 #[allow(missing_docs)]
 #[derive(Debug)]
 pub struct Ctrnn<'a> {
-    pub y: &'a [f64],
-    pub delta_t: f64,
-    pub tau: &'a [f64], //time constant
-    pub wij: &'a [f64], //weights
-    pub theta: &'a [f64], //bias
-    pub i: &'a [f64], //sensors
+    pub y: &'a [Num],
+    pub delta_t: Num,
+    pub tau: &'a [Num], //time constant
+    pub wij: &'a [Num], //weights
+    pub theta: &'a [Num], //bias
+    pub i: &'a [Num], //sensors
 }
 
 
 #[allow(missing_docs)]
 impl<'a> Ctrnn<'a> {
-    pub fn activate_nn(&self, steps: usize) -> Vec<f64> {
+    pub fn activate_nn(&self, steps: usize) -> Vec<Num> {
         let mut y = Ctrnn::vector_to_column_matrix(self.y);
         let theta = Ctrnn::vector_to_column_matrix(self.theta);
         let wij = Ctrnn::vector_to_matrix(self.wij);
@@ -31,7 +34,7 @@ impl<'a> Ctrnn<'a> {
         y.into_vec()
     }
 
-    fn sigmoid(y: f64) -> f64 {
+    fn sigmoid(y: Num) -> Num {
         // if y > 0.0 {
             // 1.0
         // } else {
@@ -40,12 +43,12 @@ impl<'a> Ctrnn<'a> {
         1.0 / (1.0 + (-y).exp())
     }
 
-    fn vector_to_column_matrix(vector: &[f64]) -> Matrix<f64> {
+    fn vector_to_column_matrix(vector: &[Num]) -> Matrix<Num> {
         Matrix::new(vector.len(), 1, vector)
     }
 
-    fn vector_to_matrix(vector: &[f64]) -> Matrix<f64> {
-        let width = (vector.len() as f64).sqrt() as usize;
+    fn vector_to_matrix(vector: &[Num]) -> Matrix<Num> {
+        let width = (vector.len() as Num).sqrt() as usize;
         Matrix::new(width, width, vector)
     }
 }

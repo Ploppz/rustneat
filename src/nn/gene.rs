@@ -1,24 +1,25 @@
 use rand;
 use std::cmp::Ordering;
+use crate::nn::ctrnn::Num;
 
 /// Gene for a neuron in the `NeuralNetwork`.
 #[derive(Default, Debug, Copy, Clone)]
 pub struct NeuronGene {
     /// Bias of the neuron.
-    pub bias: f64,
+    pub bias: Num,
 }
 impl NeuronGene {
     ///
-    pub fn new(bias: f64) -> NeuronGene {
+    pub fn new(bias: Num) -> NeuronGene {
         NeuronGene {
             bias,
         }
     }
     /// Randomly generate a bias
-    pub fn generate_bias() -> f64 {
+    pub fn generate_bias() -> Num {
         use rand::distributions::{Normal, Distribution};
         let mut rng = rand::thread_rng();
-        Normal::new(0.0, 1.0).sample(&mut rng)
+        Normal::new(0.0, 1.0).sample(&mut rng) as f32
     }
 }
 
@@ -29,7 +30,7 @@ pub struct ConnectionGene {
     in_neuron_id: usize,
     out_neuron_id: usize,
     /// Weight of the connection
-    pub weight: f64,
+    pub weight: Num,
     /// Whether the expression of a gene is enabled.
     pub enabled: bool,
 }
@@ -68,7 +69,7 @@ impl PartialOrd for ConnectionGene {
 
 impl ConnectionGene {
     /// Create a new gene
-    pub fn new(in_neuron_id: usize, out_neuron_id: usize, weight: f64, enabled: bool) -> ConnectionGene {
+    pub fn new(in_neuron_id: usize, out_neuron_id: usize, weight: Num, enabled: bool) -> ConnectionGene {
         ConnectionGene {
             in_neuron_id: in_neuron_id,
             out_neuron_id: out_neuron_id,
@@ -77,8 +78,8 @@ impl ConnectionGene {
         }
     }
     /// ConnectionGenerate a weight
-    pub fn generate_weight() -> f64 {
-        rand::random::<f64>() * 2.0 - 1.0
+    pub fn generate_weight() -> Num {
+        rand::random::<Num>() * 2.0 - 1.0
     }
     /// Connection in ->
     pub fn in_neuron_id(&self) -> usize {

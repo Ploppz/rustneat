@@ -65,7 +65,7 @@ impl Genome for NeuralNetwork {
             acc + (m_gene.weight
                 - &other.connections[other.connections.binary_search(m_gene).unwrap()].weight)
                 .abs()
-        });
+        }) as f64;
 
         let w = if n3 == 0 { 0.0 } else { w1 / n3 as f64 };
 
@@ -132,7 +132,7 @@ impl NeuralNetwork {
 
     /// Activate the neural network by sending input `inputs` into its first `inputs.len()`
     /// neurons
-    pub fn activate(&self, mut inputs: Vec<f64>, outputs: &mut Vec<f64>) {
+    pub fn activate(&self, mut inputs: Vec<Num>, outputs: &mut Vec<Num>) {
         let n_neurons = self.n_neurons();
         let n_inputs = inputs.len();
 
@@ -169,7 +169,7 @@ impl NeuralNetwork {
 
     /// Helper function for `activate()`. Get weights of connections (as a matrix represented
     /// linearly)
-    pub fn get_weights(&self) -> Vec<f64> {
+    pub fn get_weights(&self) -> Vec<Num> {
         let n_neurons = self.neurons.len();
         let mut matrix = vec![0.0; n_neurons * n_neurons];
         for gene in &self.connections {
@@ -180,7 +180,7 @@ impl NeuralNetwork {
         matrix
     }
     /// Helper function for `activate()`. Get bias of neurons.
-    pub fn get_bias(&self) -> Vec<f64> {
+    pub fn get_bias(&self) -> Vec<Num> {
         self.neurons.iter().map(|x| x.bias).collect()
     }
     /// Returns a list of the 'enabled' field along connections
@@ -334,7 +334,7 @@ impl NeuralNetwork {
     }
 
     /// Add a new connection. Panics if in_neuron or out_neuron are invalid neuron IDs.
-    pub fn add_connection(&mut self, in_neuron: usize, out_neuron: usize, weight: f64) {
+    pub fn add_connection(&mut self, in_neuron: usize, out_neuron: usize, weight: Num) {
         assert!(self.neurons.len() > 0, "add_connection: Tried to add a connection to network with no neurons");
         let new_gene = ConnectionGene::new(in_neuron, out_neuron, weight, true);
         let max_neuron_id = self.neurons.len()-1;
@@ -353,7 +353,7 @@ impl NeuralNetwork {
 
 
     /// Total weigths of all genes
-    pub fn total_weights(&self) -> f64 {
+    pub fn total_weights(&self) -> Num {
         let mut total = 0.0;
         for gene in &self.connections {
             total += gene.weight;
