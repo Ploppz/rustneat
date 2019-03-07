@@ -1,3 +1,4 @@
+#![allow(trivial_numeric_casts)]
 use rand;
 use std::cmp::Ordering;
 use crate::nn::ctrnn::Num;
@@ -19,7 +20,7 @@ impl NeuronGene {
     pub fn generate_bias() -> Num {
         use rand::distributions::{Normal, Distribution};
         let mut rng = rand::thread_rng();
-        Normal::new(0.0, 1.0).sample(&mut rng) as f32
+        Normal::new(0.0, 1.0).sample(&mut rng) as Num
     }
 }
 

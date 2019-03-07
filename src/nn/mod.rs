@@ -1,3 +1,4 @@
+#![allow(trivial_numeric_casts)]
 use crate::{Genome, Params};
 use rand::{self, distributions::{Distribution, Uniform}};
 use std::cmp;
