@@ -94,6 +94,23 @@ impl<G: Genome> Population<G> {
     pub fn evolve(&mut self, env: &mut Environment<G>, p: &NeatParams) {
         // Collect all organisms
         let organisms = self.get_organisms().cloned().collect::<Vec<_>>();
+        // Telemetry
+        #[cfg(feature = "telemetry")] {
+            let mut champion = None;
+            let mut champion_fitness = - std::f64::INFINITY;
+            for organism in &organisms {
+                if organism.fitness > champion_fitness {
+                    champion = Some(&organism.genome);
+                    champion_fitness = organism.fitness
+                }
+            }
+            telemetry!("fitness1", 1.0, format!("{}", champion_fitness));
+            telemetry!(
+                "network1",
+                1.0,
+                serde_json::to_string(champion.unwrap()).unwrap()  /* TODO how to serialize correctly */
+            );
+        }
 
         // Divide into species
         self.speciate(&organisms, p);
@@ -144,6 +161,8 @@ impl<G: Genome> Population<G> {
                         std::process::exit(1);
                     }
                 }))
+
+
     }
     
     // fn determine_new_species_sizes()
