@@ -126,7 +126,7 @@ impl<G: Genome> Specie<G> {
         let n_elite = if self.organisms.len() > 5 { 2 } else { 1 };
         let first_elite = self.organisms.len() - n_elite;
 
-        let n_random = n_offspring - n_elite;
+        let n_random = n_offspring.saturating_sub(n_elite);
 
         let n_to_cull = std::cmp::min(
             first_elite,
